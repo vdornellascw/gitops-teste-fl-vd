@@ -1,0 +1,35 @@
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: default
+spec:
+  amiFamily: AL2023
+  amiSelectorTerms:
+  - id: ami-02382489c95ee1382
+  role: "role-for-nodegroup-mdias-eks-teste"
+  metadataOptions:
+    httpEndpoint: enabled
+    httpProtocolIPv6: disabled
+    httpPutResponseHopLimit: 2
+    httpTokens: required
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "mdias-eks-teste"
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "mdias-eks-teste"
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: 50Gi
+        volumeType: gp3
+        iops: 3000
+        deleteOnTermination: true
+        throughput: 125
+  tags:
+    Name: mdias-eks-teste-node
+    Project: eks
+    Client: mdias
+    Environment: dev
+    CreatedBy: karpenter
+    Squad: devops
