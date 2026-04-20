@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: karpenter
+  namespace: argocd
+spec:
+  destination:
+    namespace: karpenter
+    name: mdias-dev
+  project: default
+  sources:
+    - chart: karpenter
+      repoURL: oci://public.ecr.aws/karpenter/karpenter
+      targetRevision: "1.11.0"
+      helm:
+        valuesObject:
+          settings:
+            clusterName: "mdias-eks-teste"
+            featureGates:
+              staticCapacity: false
+          serviceAccount:
+            annotations:
+              eks.amazonaws.com/role-arn: "arn:aws:iam::651644924182:role/karpenter-controller-mdias-eks-teste"
+          replicas: 1
+    - repoURL: https://github.com/vdornellascw/gitops-teste-fl-vd.git
+      path: karpenter
+      targetRevision: HEAD
+      directory:
+        recurse: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
