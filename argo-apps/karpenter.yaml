@@ -16,6 +16,7 @@ spec:
         valuesObject:
           settings:
             clusterName: "mdias-eks-teste"
+            interruptionQueue: "karpenter-mdias-eks-teste" # enables proactive spot interruption handling via SQS/EventBridge (2-min ITN signal)
             featureGates:
               staticCapacity: false
           serviceAccount:
